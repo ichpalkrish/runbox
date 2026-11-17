@@ -1,37 +1,39 @@
 # Repository Guidelines — Linux Execution Lab
 
-## Execution environment
+## Source and execution environment
 
-The authoritative project checkout is on the Arch Linux VM.
+The authoritative Git checkout is `/Users/krishichpal/Documents/runbox` on
+macOS. This guide is copied unchanged into VM snapshots, so its source-of-truth
+rules always refer to that macOS path. The Linux execution VM is
+`krish@192.168.29.195`; its disposable session workspaces live under
+`/home/krish/runbox-vm-workspaces/`. Build, test, and run the project in those
+Linux workspaces. The old `/home/krish/runbox/runbox` checkout is preserved for
+recovery and is not an active project workspace.
 
-SSH host: `krish@192.168.29.195`
-Repository path: `/home/krish/runbox/runbox`
+On macOS, inspect Git status and start a clean-HEAD snapshot with
+`python3 scripts/session.py start`. Attach to the reported VM workspace through
+SSH and tmux. When working on the VM, edit only that session workspace. Collect
+the return patch, review it, and apply it on macOS only when the local checkout
+is still clean at the recorded base commit. See `docs/DEVELOPMENT.md` for exact
+commands and limits.
 
-Perform project reads, edits, builds, tests, and Git operations through SSH in
-that checkout. Read its `AGENTS.md` before beginning work.
+There is no automatic synchronization between macOS and the VM. A session
+starts from one frozen local commit; its reviewed patch returns to that same
+checkout. Never commit in a VM session or edit the preserved legacy checkout.
+Keep credentials outside project source. Session creation blocks `.env*` files
+and common credential-like paths; review every returned manifest and patch.
+Ignored build output stays out of snapshots, and remote workspaces remain until
+the import is verified.
 
-The local macOS checkout is not the working copy. Do not edit project source
-locally or assume it matches the VM.
+## Git workflow
 
-## Git workflow across machines
-
-Use the VM as the only project editing checkout. Access it from macOS through
-SSH or an editor connected to the VM. Separate clones do not synchronize files
-automatically; synchronize committed work through Git.
-
-Before starting work, inspect `git status --short --branch`. Fetch with
-`git fetch origin` and, when the worktree is clean, update with
-`git pull --ff-only`. If histories diverge, inspect both sides and reconcile
-intentionally; do not force push or discard work to make synchronization pass.
-
-Use a feature branch for each change. Commit intended source and documentation;
-keep builds, caches, and experiment output in ignored locations. Before a push,
-review the diff and fetch again. If the macOS clone is used for viewing, update
-it only when clean with `git pull --ff-only`. Avoid editing the same branch from
-both machines. Ignore rules do not prevent conflicts in tracked files.
-
-This VM checkout uses local Git settings `pull.ff=only` and
-`push.default=simple`. Other clones must configure their own settings. Shared
+Inspect `git status --short --branch` before work. Fetch with `git fetch origin`
+and update only a clean branch with `git pull --ff-only`. If histories diverge,
+inspect both sides and reconcile intentionally; do not force-push or discard
+work to make synchronization pass. Use a focused feature branch for each
+change, stage explicit paths, review staged and unstaged diffs, and commit on
+macOS. Push from macOS after reviewing the diff and the current upstream state.
+Keep builds, caches, and experiment output in ignored locations. Shared
 `.gitattributes` normalizes text to LF. Never use an automatic "ours" merge rule
 for project guidance or source; that can silently discard changes.
 
