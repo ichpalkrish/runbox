@@ -1,0 +1,47 @@
+# C++ out-of-tree builds and local executables
+/build/
+/build-*/
+/cmake-build-*/
+/runlab
+/compile_commands.json
+*.o
+*.obj
+*.a
+*.so
+*.so.*
+*.d
+*.gcda
+*.gcno
+*.gcov
+*.profraw
+*.profdata
+core
+core.[0-9]*
+
+# Python test environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local experiment output (keep test fixtures elsewhere)
+/runs/
+/artifacts/
+
+# Machine-specific editor and OS files
+.DS_Store
+._*
+.idea/
+.vscode/
+.cache/
+*.swp
+*.swo
+*~
+
+# Local environment configuration
+.env
+.env.*
+!.env.example
